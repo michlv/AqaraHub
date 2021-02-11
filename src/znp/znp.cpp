@@ -25,6 +25,10 @@ std::ostream& operator<<(std::ostream& stream, const ZnpSubsystem& subsys) {
       return stream << "DEBUG";
     case ZnpSubsystem::APP:
       return stream << "APP";
+    case ZnpSubsystem::APP_CNF:
+      return stream << "APP_CNF";
+    case ZnpSubsystem::GP:
+      return stream << "GP";
     default:
       return stream << "UNK(" << (int)subsys << ")";
   }
@@ -376,6 +380,15 @@ std::ostream& operator<<(std::ostream& stream, UtilCommand command) {
   }
 }
 
+std::ostream& operator<<(std::ostream& stream, AppCnfCommand command) {
+  switch (command) {
+    case AppCnfCommand::BDB_COMMISSIONING_NOTIFICATION:
+    	return stream << "BDB_COMMISSIONING_NOTIFICATION";
+    default:
+      return stream << "AppCnfCommand(" << (unsigned int)command << ")";
+  }
+}
+
 ZnpCommand::ZnpCommand(ZnpSubsystem subsystem, uint8_t command)
     : value_(subsystem, command) {}
 ZnpCommand::ZnpCommand(SysCommand command)
@@ -422,6 +435,8 @@ std::ostream& operator<<(std::ostream& stream, ZnpCommand command) {
       return stream << (SapiCommand)command.value_.second;
     case ZnpSubsystem::UTIL:
       return stream << (UtilCommand)command.value_.second;
+    case ZnpSubsystem::APP_CNF:
+      return stream << (AppCnfCommand)command.value_.second;
     default:
       return stream << std::hex << (unsigned int)command.value_.second;
   }

@@ -28,6 +28,9 @@ ZnpApi::ZnpApi(boost::asio::io_service& io_service,
   // decoding.
   AddSimpleEventHandler(ZnpCommandType::AREQ, AfCommand::INCOMING_MSG,
                         af_on_incoming_msg_, true);
+
+//  AddSimpleEventHandler(ZnpCommandType::AREQ, AppCnfCommand::APP_CNF_BDB_COMMISSIONING_NOTIFICATION,
+//                        app_cnf_on_bdb_commissioning_, false);
 }
 
 stlab::future<ResetInfo> ZnpApi::SysReset(bool soft_reset) {

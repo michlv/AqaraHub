@@ -18,7 +18,9 @@ enum class ZnpSubsystem {
   SAPI = 6,
   UTIL = 7,
   DEBUG = 8,
-  APP = 9
+  APP = 9,
+  APP_CNF = 15,
+  GP = 0x15
 };
 std::ostream& operator<<(std::ostream& stream, const ZnpSubsystem& subsys);
 
@@ -216,6 +218,13 @@ enum class UtilCommand : uint8_t {
 };
 
 std::ostream& operator<<(std::ostream& stream, UtilCommand command);
+
+// Commands in the AppCnf subsystem
+enum class AppCnfCommand : uint8_t {
+  BDB_COMMISSIONING_NOTIFICATION = 0x80
+};
+
+std::ostream& operator<<(std::ostream& stream, AppCnfCommand command);
 
 class ZnpCommand {
  public:
