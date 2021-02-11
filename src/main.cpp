@@ -673,6 +673,9 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   LOG("Initialize", debug) << "Reset Info " << resetInfo;
   auto versionInfo = await(api->SysVersion());
   LOG("Initialize", debug) << "Get version " << versionInfo;
+  if (versionInfo.ProductId != (uint8_t)znp::ZnpVersion::ZStack12) {
+    LOG("Initialize", debug) << "ZStack 3";
+  }
   LOG("Initialize", debug) << "Building desired configuration";
   auto coord_ieee_addr =
       await(api->SapiGetDeviceInfo<znp::DeviceInfo::DeviceIEEEAddress>());

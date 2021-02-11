@@ -414,6 +414,13 @@ enum class Latency : uint8_t {
   FastBeacons = 1,
   SlowBeacons = 2
 };
+
+enum class ZnpVersion : uint8_t {
+  ZStack12 = 0,
+  ZStack30x = 1,
+  ZStack3x0 = 2
+};
+
 }  // namespace znp
 
 BOOST_FUSION_DEFINE_STRUCT((znp), ResetInfo,
