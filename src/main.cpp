@@ -669,7 +669,10 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
     std::shared_ptr<clusterdb::ClusterDb> cluster_db) {
   LOG("Initialize", debug) << "Doing initial reset (this may take up to a full "
                               "minute after a dongle power-cycle)";
-  std::ignore = await(api->SysReset(true));
+  auto resetInfo = await(api->SysReset(true));
+  LOG("Initialize", debug) << "Reset Info " << resetInfo;
+  auto versionInfo = await(api->SysVersion());
+  LOG("Initialize", debug) << "Get version " << versionInfo;
   LOG("Initialize", debug) << "Building desired configuration";
   auto coord_ieee_addr =
       await(api->SapiGetDeviceInfo<znp::DeviceInfo::DeviceIEEEAddress>());

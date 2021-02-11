@@ -24,6 +24,7 @@ class ZnpApi {
   // SYS commands
   stlab::future<ResetInfo> SysReset(bool soft_reset);
   stlab::future<Capability> SysPing();
+  stlab::future<VersionInfo> SysVersion();
   stlab::future<void> SysOsalNvItemInitRaw(NvItemId Id, uint16_t ItemLen,
                                            std::vector<uint8_t> InitData);
   stlab::future<std::vector<uint8_t>> SysOsalNvReadRaw(NvItemId Id,

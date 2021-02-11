@@ -477,6 +477,15 @@ std::ostream& operator<<(std::ostream& stream, const ResetInfo& info) {
                 << (unsigned int)info.HwRev << "]";
 }
 
+std::ostream& operator<<(std::ostream& stream, const VersionInfo& info) {
+  return stream << "[" 
+                << (unsigned int)info.TransportRev << " "
+                << (unsigned int)info.ProductId << " "
+                << (unsigned int)info.MajorRel << "."
+                << (unsigned int)info.MinorRel << "."
+                << (unsigned int)info.MaintRel << "]";
+}
+
 BindTarget::BindTarget() : mode_(AddrMode::NotPresent) {}
 AddrMode BindTarget::GetMode() const { return mode_; }
 uint16_t BindTarget::GetGroupId() const {

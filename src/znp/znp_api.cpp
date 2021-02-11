@@ -47,6 +47,10 @@ stlab::future<Capability> ZnpApi::SysPing() {
   return RawSReq(SysCommand::PING, znp::Encode()).then(znp::Decode<Capability>);
 }
 
+stlab::future<VersionInfo> ZnpApi::SysVersion() {
+  return RawSReq(SysCommand::VERSION, znp::Encode()).then(znp::Decode<VersionInfo>);
+}
+
 stlab::future<void> ZnpApi::SysOsalNvItemInitRaw(
     NvItemId Id, uint16_t ItemLen, std::vector<uint8_t> InitData) {
   return RawSReq(SysCommand::OSAL_NV_ITEM_INIT,
