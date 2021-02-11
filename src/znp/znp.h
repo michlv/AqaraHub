@@ -443,7 +443,11 @@ BOOST_FUSION_DEFINE_STRUCT((znp), VersionInfo,
                            (uint8_t, ProductId)
                            (uint8_t, MajorRel)
                            (uint8_t, MinorRel)
-                           (uint8_t, MaintRel))
+                           (uint8_t, MaintRel)
+                           (uint32_t, Gap1)
+                           (uint32_t, Gap2)
+                           (uint8_t, Gap3)
+			  )
 
 namespace znp {
 std::ostream& operator<<(std::ostream& stream, const VersionInfo& info);

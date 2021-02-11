@@ -483,7 +483,11 @@ std::ostream& operator<<(std::ostream& stream, const VersionInfo& info) {
                 << (unsigned int)info.ProductId << " "
                 << (unsigned int)info.MajorRel << "."
                 << (unsigned int)info.MinorRel << "."
-                << (unsigned int)info.MaintRel << "]";
+                << (unsigned int)info.MaintRel << " "
+                << (unsigned int)info.Gap1 << "."
+                << (unsigned int)info.Gap2 << "."
+                << (unsigned int)info.Gap3
+                << "]";
 }
 
 BindTarget::BindTarget() : mode_(AddrMode::NotPresent) {}
