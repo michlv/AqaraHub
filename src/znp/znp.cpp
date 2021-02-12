@@ -382,6 +382,10 @@ std::ostream& operator<<(std::ostream& stream, UtilCommand command) {
 
 std::ostream& operator<<(std::ostream& stream, AppCnfCommand command) {
   switch (command) {
+    case AppCnfCommand::BDB_START_COMMISSIONING:
+	return stream << "BDB_START_COMMISSIONING";
+    case AppCnfCommand::BDB_SET_CHANNEL:
+	return stream << "BDB_SET_CHANNEL";
     case AppCnfCommand::BDB_COMMISSIONING_NOTIFICATION:
     	return stream << "BDB_COMMISSIONING_NOTIFICATION";
     default:
@@ -401,6 +405,8 @@ ZnpCommand::ZnpCommand(SapiCommand command)
     : value_(ZnpSubsystem::SAPI, (uint8_t)command) {}
 ZnpCommand::ZnpCommand(UtilCommand command)
     : value_(ZnpSubsystem::UTIL, (uint8_t)command) {}
+ZnpCommand::ZnpCommand(AppCnfCommand command)
+    : value_(ZnpSubsystem::APP_CNF, (uint8_t)command) {}
 
 ZnpSubsystem ZnpCommand::Subsystem() { return value_.first; }
 uint8_t ZnpCommand::RawCommand() { return value_.second; }

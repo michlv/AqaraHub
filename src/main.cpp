@@ -673,9 +673,6 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   LOG("Initialize", debug) << "Reset Info " << resetInfo;
   auto versionInfo = await(api->SysVersion());
   LOG("Initialize", debug) << "Get version " << versionInfo;
-  if (versionInfo.ProductId != (uint8_t)znp::ZnpVersion::ZStack12) {
-    LOG("Initialize", debug) << "ZStack 3";
-  }
   LOG("Initialize", debug) << "Building desired configuration";
   auto coord_ieee_addr =
       await(api->SapiGetDeviceInfo<znp::DeviceInfo::DeviceIEEEAddress>());
@@ -713,6 +710,12 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   uint8_t device_state = await(future_state);
   LOG("Initialize", debug) << "Final device state "
                            << (unsigned int)device_state;
+
+  if (versionInfo.ProductId != (uint8_t)znp::ZnpVersion::ZStack12) {
+    LOG("Initialize", debug) << "ZStack 3";
+    await(api->AppCnfBdbSetChannel(true, chan_list));
+    await(api->AppCnfBdbSetChannel(false, 0));
+  }
 
   std::ignore =
       await(api->ZdoMgmtPermitJoin(znp::AddrMode::ShortAddress, 0, 0, 0));

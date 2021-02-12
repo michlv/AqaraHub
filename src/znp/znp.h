@@ -221,6 +221,8 @@ std::ostream& operator<<(std::ostream& stream, UtilCommand command);
 
 // Commands in the AppCnf subsystem
 enum class AppCnfCommand : uint8_t {
+  BDB_START_COMMISSIONING = 0x05,
+  BDB_SET_CHANNEL = 0x08,
   BDB_COMMISSIONING_NOTIFICATION = 0x80
 };
 
@@ -234,6 +236,7 @@ class ZnpCommand {
   ZnpCommand(ZdoCommand command);
   ZnpCommand(SapiCommand command);
   ZnpCommand(UtilCommand command);
+  ZnpCommand(AppCnfCommand command);
 
   ZnpSubsystem Subsystem();
   uint8_t RawCommand();

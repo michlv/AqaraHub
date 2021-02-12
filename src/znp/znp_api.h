@@ -128,6 +128,10 @@ class ZnpApi {
   stlab::future<ShortAddress> UtilAddrmgrExtAddrLookup(IEEEAddress address);
   // UTIL events
 
+  // APP_CNF events
+  stlab::future<void> AppCnfBdbSetChannel(bool isPrimary, uint32_t channelMask);
+  // APP_CNF events
+
   // Helper functions
   stlab::future<DeviceState> WaitForState(std::set<DeviceState> end_states,
                                           std::set<DeviceState> allowed_states);

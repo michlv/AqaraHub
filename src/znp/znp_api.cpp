@@ -336,6 +336,12 @@ stlab::future<ShortAddress> ZnpApi::UtilAddrmgrExtAddrLookup(
       .then(&znp::Decode<ShortAddress>);
 }
 
+stlab::future<void> ZnpApi::AppCnfBdbSetChannel(bool isPrimary,
+                                                uint32_t channelMask) {
+  return RawSReq(AppCnfCommand::BDB_SET_CHANNEL, znp::EncodeT((uint8_t)isPrimary, channelMask))
+      .then(&CheckOnlyStatus);
+}
+
 void ZnpApi::OnFrame(ZnpCommandType type, ZnpCommand command,
                      const std::vector<uint8_t>& payload) {
   for (auto it = handlers_.begin(); it != handlers_.end();) {
