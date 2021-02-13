@@ -130,6 +130,7 @@ class ZnpApi {
 
   // APP_CNF events
   stlab::future<void> AppCnfBdbSetChannel(bool isPrimary, uint32_t channelMask);
+  stlab::future<void> AppCnfBdbStartCommissioning(uint8_t mode);
   // APP_CNF events
 
   // Helper functions

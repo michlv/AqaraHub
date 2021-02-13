@@ -429,8 +429,8 @@ enum class Latency : uint8_t {
 
 enum class ZnpVersion : uint8_t {
   ZStack12 = 0,
-  ZStack30x = 1,
-  ZStack3x0 = 2
+  ZStack3x0 = 1,
+  ZStack30x = 2
 };
 
 }  // namespace znp

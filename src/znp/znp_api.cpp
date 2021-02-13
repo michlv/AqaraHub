@@ -342,6 +342,11 @@ stlab::future<void> ZnpApi::AppCnfBdbSetChannel(bool isPrimary,
       .then(&CheckOnlyStatus);
 }
 
+stlab::future<void> ZnpApi::AppCnfBdbStartCommissioning(uint8_t mode) {
+  return RawSReq(AppCnfCommand::BDB_START_COMMISSIONING, znp::Encode(mode))
+      .then(&CheckOnlyStatus);
+}
+
 void ZnpApi::OnFrame(ZnpCommandType type, ZnpCommand command,
                      const std::vector<uint8_t>& payload) {
   for (auto it = handlers_.begin(); it != handlers_.end();) {

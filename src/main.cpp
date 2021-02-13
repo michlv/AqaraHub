@@ -679,6 +679,7 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   LOG("Initialize", debug) << "Device IEEE Address: " << std::hex
                            << coord_ieee_addr;
   FullConfiguration desired_config;
+  desired_config.startup_option = znp::StartupOption::ClearState;
   desired_config.startup_option = znp::StartupOption::None;
   desired_config.pan_id = pan_id;
   desired_config.extended_pan_id = coord_ieee_addr;
@@ -700,6 +701,19 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
     LOG("Initialize", debug) << "Desired configuration matches current "
                                 "configuration, ready to start!";
   }
+    if (versionInfo.ProductId == (uint8_t)znp::ZnpVersion::ZStack30x) {
+      LOG("Initialize", debug) << "ZStack 30x";
+      await(api->AppCnfBdbSetChannel(true, chan_list));
+      await(api->AppCnfBdbSetChannel(false, 0));
+      auto future_state =
+      api->WaitForState({znp::DeviceState::ZB_COORD},
+                        {znp::DeviceState::COORD_STARTING,
+                         znp::DeviceState::HOLD, znp::DeviceState::INIT});
+      await(api->AppCnfBdbStartCommissioning(0x04));
+      await(future_state);
+      await(api->AppCnfBdbStartCommissioning(0x02));
+    }
+
   LOG("Initialize", debug) << "Starting ZDO";
   auto future_state =
       api->WaitForState({znp::DeviceState::ZB_COORD},
@@ -710,12 +724,6 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   uint8_t device_state = await(future_state);
   LOG("Initialize", debug) << "Final device state "
                            << (unsigned int)device_state;
-
-  if (versionInfo.ProductId != (uint8_t)znp::ZnpVersion::ZStack12) {
-    LOG("Initialize", debug) << "ZStack 3";
-    await(api->AppCnfBdbSetChannel(true, chan_list));
-    await(api->AppCnfBdbSetChannel(false, 0));
-  }
 
   std::ignore =
       await(api->ZdoMgmtPermitJoin(znp::AddrMode::ShortAddress, 0, 0, 0));
