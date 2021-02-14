@@ -65,8 +65,11 @@ class ZnpApi {
                                             uint16_t dst_address,
                                             uint8_t duration,
                                             uint8_t tc_significance);
+
   stlab::future<StartupFromAppResponse> ZdoStartupFromApp(
       uint16_t start_delay_ms);
+
+  stlab::future<void> ZdoNodeDescReq(ShortAddress address);
 
   stlab::future<void> ZdoBind(ShortAddress DstAddr, IEEEAddress SrcAddress,
                               uint8_t SrcEndpoint, uint16_t ClusterId,
@@ -93,6 +96,9 @@ class ZnpApi {
   boost::signals2::signal<void(ShortAddress, ShortAddress, IEEEAddress,
                                uint8_t)>
       zdo_on_end_device_announce_;
+  boost::signals2::signal<void(ShortAddress, IEEEAddress,
+                               uint8_t, uint8_t, uint8_t)>
+      zdo_on_leave_ind_;
   boost::signals2::signal<void(uint8_t)> zdo_on_permit_join_;
 
   // SAPI commands
@@ -128,10 +134,12 @@ class ZnpApi {
   stlab::future<ShortAddress> UtilAddrmgrExtAddrLookup(IEEEAddress address);
   // UTIL events
 
-  // APP_CNF events
+  // APP_CNF commands
   stlab::future<void> AppCnfBdbSetChannel(bool isPrimary, uint32_t channelMask);
   stlab::future<void> AppCnfBdbStartCommissioning(uint8_t mode);
+
   // APP_CNF events
+  boost::signals2::signal<void(uint8_t, uint8_t, uint8_t)> app_cnf_on_bdb_commissioning_notification_;
 
   // Helper functions
   stlab::future<DeviceState> WaitForState(std::set<DeviceState> end_states,

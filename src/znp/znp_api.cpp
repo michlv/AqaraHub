@@ -22,6 +22,9 @@ ZnpApi::ZnpApi(boost::asio::io_service& io_service,
                         zdo_on_end_device_announce_, false);
   AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::TC_DEV_IND,
                         zdo_on_trustcenter_device_, false);
+  AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::LEAVE_IND,
+                        zdo_on_leave_ind_, false);
+
   AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::PERMIT_JOIN_IND,
                         zdo_on_permit_join_, false);
   // NOTE: INCOMING_MSG sometimes has 3 extra trailing bytes, so allow a partial
@@ -29,8 +32,8 @@ ZnpApi::ZnpApi(boost::asio::io_service& io_service,
   AddSimpleEventHandler(ZnpCommandType::AREQ, AfCommand::INCOMING_MSG,
                         af_on_incoming_msg_, true);
 
-//  AddSimpleEventHandler(ZnpCommandType::AREQ, AppCnfCommand::APP_CNF_BDB_COMMISSIONING_NOTIFICATION,
-//                        app_cnf_on_bdb_commissioning_, false);
+  AddSimpleEventHandler(ZnpCommandType::AREQ, AppCnfCommand::BDB_COMMISSIONING_NOTIFICATION,
+                        app_cnf_on_bdb_commissioning_notification_, false);
 }
 
 stlab::future<ResetInfo> ZnpApi::SysReset(bool soft_reset) {
@@ -197,6 +200,17 @@ ZnpApi::ZdoGetLinkKey(IEEEAddress IEEEAddr) {
   return RawSReq(ZdoCommand::GET_LINK_KEY, znp::Encode(IEEEAddr))
       .then(&ZnpApi::CheckStatus)
       .then(&znp::Decode<std::tuple<IEEEAddress, std::array<uint8_t, 16>>>);
+}
+
+stlab::future<void> ZnpApi::ZdoNodeDescReq(ShortAddress address) {
+  return WaitAfter(RawSReq(ZdoCommand::NODE_DESC_REQ,
+                           znp::EncodeT<ShortAddress, ShortAddress>(
+                               address, address))
+                       .then(&ZnpApi::CheckOnlyStatus),
+                   ZnpCommandType::AREQ, ZdoCommand::NODE_DESC_RSP)
+      .then(&ZnpApi::CheckOnlyStatus);
+//      .then(&ZnpApi::CheckStatus)
+//      .then(&znp::Decode<ZdoIEEEAddressResponse>);
 }
 
 stlab::future<void> ZnpApi::ZdoBind(ShortAddress DstAddr,
