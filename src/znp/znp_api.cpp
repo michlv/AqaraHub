@@ -27,6 +27,14 @@ ZnpApi::ZnpApi(boost::asio::io_service& io_service,
 
   AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::PERMIT_JOIN_IND,
                         zdo_on_permit_join_, false);
+
+  AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::NODE_DESC_RSP,
+                        zdo_on_node_desc_, false);
+  AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::ACTIVE_EP_RSP,
+                        zdo_on_active_ep_, false);
+  AddSimpleEventHandler(ZnpCommandType::AREQ, ZdoCommand::SIMPLE_DESC_RSP,
+                        zdo_on_simple_desc_, false);
+
   // NOTE: INCOMING_MSG sometimes has 3 extra trailing bytes, so allow a partial
   // decoding.
   AddSimpleEventHandler(ZnpCommandType::AREQ, AfCommand::INCOMING_MSG,
@@ -203,14 +211,24 @@ ZnpApi::ZdoGetLinkKey(IEEEAddress IEEEAddr) {
 }
 
 stlab::future<void> ZnpApi::ZdoNodeDescReq(ShortAddress address) {
-  return WaitAfter(RawSReq(ZdoCommand::NODE_DESC_REQ,
-                           znp::EncodeT<ShortAddress, ShortAddress>(
+  return RawSReq(ZdoCommand::NODE_DESC_REQ,
+                 znp::EncodeT<ShortAddress, ShortAddress>(
                                address, address))
-                       .then(&ZnpApi::CheckOnlyStatus),
-                   ZnpCommandType::AREQ, ZdoCommand::NODE_DESC_RSP)
-      .then(&ZnpApi::CheckOnlyStatus);
-//      .then(&ZnpApi::CheckStatus)
-//      .then(&znp::Decode<ZdoIEEEAddressResponse>);
+         .then(&ZnpApi::CheckOnlyStatus);
+}
+
+stlab::future<void> ZnpApi::ZdoActiveEpReq(ShortAddress address) {
+  return RawSReq(ZdoCommand::ACTIVE_EP_REQ,
+                 znp::EncodeT<ShortAddress, ShortAddress>(
+                               address, address))
+         .then(&ZnpApi::CheckOnlyStatus);
+}
+
+stlab::future<void> ZnpApi::ZdoSimpleDescReq(ShortAddress address, uint8_t endpoint) {
+  return RawSReq(ZdoCommand::SIMPLE_DESC_REQ,
+                 znp::EncodeT<ShortAddress, ShortAddress, uint8_t>(
+                               address, address, endpoint))
+         .then(&ZnpApi::CheckOnlyStatus);
 }
 
 stlab::future<void> ZnpApi::ZdoBind(ShortAddress DstAddr,

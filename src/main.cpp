@@ -481,6 +481,35 @@ void OnLeaveInd(std::shared_ptr<MqttWrapper> mqtt_wrapper,
       .detach();
 }
 
+void OnNodeDescRsp(std::shared_ptr<znp::ZnpApi> api,
+                   std::shared_ptr<MqttWrapper> mqtt_wrapper,
+                   std::string mqtt_prefix,
+                   znp::NodeDescRsp response) {
+  if (response.Status != 0)
+    return;
+
+  api->ZdoActiveEpReq(response.SrcAddr);
+}
+
+void OnActiveEpRsp(std::shared_ptr<znp::ZnpApi> api,
+                   std::shared_ptr<MqttWrapper> mqtt_wrapper,
+                   std::string mqtt_prefix,
+                   znp::ActiveEpRsp response) {
+  if (response.Status != 0)
+    return;
+
+  for (auto endpoint : response.ActiveEpList)
+    api->ZdoSimpleDescReq(response.SrcAddr, endpoint);
+}
+
+void OnSimpleDescRsp(std::shared_ptr<znp::ZnpApi> api,
+                   std::shared_ptr<MqttWrapper> mqtt_wrapper,
+                   std::string mqtt_prefix,
+                   znp::SimpleDescRsp response) {
+  if (response.Status != 0)
+    return;
+}
+
 void OnBdbCommissioningNotification(std::shared_ptr<MqttWrapper> mqtt_wrapper,
                          std::string mqtt_prefix,
                          uint8_t,
@@ -808,6 +837,14 @@ std::shared_ptr<zcl::ZclEndpoint> Initialize(
   api->app_cnf_on_bdb_commissioning_notification_.connect(std::bind(
       &OnBdbCommissioningNotification, mqtt_wrapper, mqtt_prefix, std::placeholders::_1,
       std::placeholders::_2, std::placeholders::_3));
+
+  api->zdo_on_node_desc_.connect(std::bind(
+      &OnNodeDescRsp, api, mqtt_wrapper, mqtt_prefix, std::placeholders::_1));
+  api->zdo_on_active_ep_.connect(std::bind(
+      &OnActiveEpRsp, api, mqtt_wrapper, mqtt_prefix, std::placeholders::_1));
+  api->zdo_on_simple_desc_.connect(std::bind(
+      &OnSimpleDescRsp, api, mqtt_wrapper, mqtt_prefix, std::placeholders::_1));
+
 
   mqtt_wrapper->on_publish_.connect(std::bind(
       &OnPublish, api, endpoint, mqtt_prefix, instance_id, cluster_db, std::placeholders::_1,

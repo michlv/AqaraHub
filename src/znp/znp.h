@@ -452,10 +452,10 @@ BOOST_FUSION_DEFINE_STRUCT(
         uint8_t, TransSeqNumber)(std::vector<uint8_t>, Data))
 
 BOOST_FUSION_DEFINE_STRUCT((znp), ZdoIEEEAddressResponse,
-                           (znp::IEEEAddress, IEEEAddr)(znp::ShortAddress,
-                                                        NwkAddr)(uint8_t,
-                                                                 StartIndex)(
-                               std::vector<znp::ShortAddress>, AssocDevList))
+                           (znp::IEEEAddress, IEEEAddr)
+                           (znp::ShortAddress, NwkAddr)
+                           (uint8_t, StartIndex)
+                           (std::vector<znp::ShortAddress>, AssocDevList))
 
 BOOST_FUSION_DEFINE_STRUCT((znp), VersionInfo,
                            (uint8_t, TransportRev)
@@ -465,8 +465,26 @@ BOOST_FUSION_DEFINE_STRUCT((znp), VersionInfo,
                            (uint8_t, MaintRel)
                            (uint32_t, Gap1)
                            (uint32_t, Gap2)
-                           (uint8_t, Gap3)
-			  )
+                           (uint8_t, Gap3))
+
+BOOST_FUSION_DEFINE_STRUCT((znp), NodeDescRsp,
+                           (znp::ShortAddress, SrcAddr)(uint8_t, Status)(znp::ShortAddress, NwkAddr)
+                           (uint8_t, LogicalType)(uint8_t, APSFlags)
+                           (uint8_t, MACCapabilityFlags)
+                           (uint16_t, ManufacturerCode)(uint8_t, MaxBufferSize)
+                           (uint16_t, MaxTransferSize)(uint16_t, ServerMask)
+                           (uint16_t, MaxOutTransferSize)(uint8_t, DescriptorCapabilities))
+
+BOOST_FUSION_DEFINE_STRUCT((znp), ActiveEpRsp,
+                           (znp::ShortAddress, SrcAddr)(uint8_t, Status)(znp::ShortAddress, NwkAddr)
+                           (std::vector<uint8_t>, ActiveEpList))
+
+BOOST_FUSION_DEFINE_STRUCT((znp), SimpleDescRsp,
+                           (znp::ShortAddress, SrcAddr)(uint8_t, Status)(znp::ShortAddress, NwkAddr)
+                           (uint8_t, Len)(uint8_t, Endpoint)
+                           (uint16_t, ProfileId)(uint16_t, DeviceId)(uint8_t, DeviceVersion)
+                           (std::vector<uint16_t>, InClusterList)
+                           (std::vector<uint16_t>, OutClusterList))
 
 namespace znp {
 std::ostream& operator<<(std::ostream& stream, const VersionInfo& info);

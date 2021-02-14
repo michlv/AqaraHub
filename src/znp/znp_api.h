@@ -70,6 +70,8 @@ class ZnpApi {
       uint16_t start_delay_ms);
 
   stlab::future<void> ZdoNodeDescReq(ShortAddress address);
+  stlab::future<void> ZdoActiveEpReq(ShortAddress address);
+  stlab::future<void> ZdoSimpleDescReq(ShortAddress address, uint8_t EndPoint);
 
   stlab::future<void> ZdoBind(ShortAddress DstAddr, IEEEAddress SrcAddress,
                               uint8_t SrcEndpoint, uint16_t ClusterId,
@@ -100,6 +102,10 @@ class ZnpApi {
                                uint8_t, uint8_t, uint8_t)>
       zdo_on_leave_ind_;
   boost::signals2::signal<void(uint8_t)> zdo_on_permit_join_;
+
+  boost::signals2::signal<void(NodeDescRsp)> zdo_on_node_desc_;
+  boost::signals2::signal<void(ActiveEpRsp)> zdo_on_active_ep_;
+  boost::signals2::signal<void(SimpleDescRsp)> zdo_on_simple_desc_;
 
   // SAPI commands
   stlab::future<std::vector<uint8_t>> SapiReadConfigurationRaw(
